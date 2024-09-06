@@ -1,144 +1,75 @@
 import { ApplicationService } from "../services/applicationService";
+
 export class ApplicationController {
-  static async createApplication(req: Request) {
+  static async createApplication({ body }: { body: any }) {
     try {
-      const data = req.body;
-      const application = await ApplicationService.createApplication(data);
-      return new Response(
-        JSON.stringify({ message: "Application created successfully", application }),
-        {
-          status: 201,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const application = await ApplicationService.createApplication(body);
+      return {
+        message: "Application created successfully",
+        application,
+      };
+    } catch (error: any) {
+      return {
+        message: error.message,
+        status: 400,
+      };
     }
   }
 
-  static async getAllApplications(req: Request) {
+  static async getAllApplications() {
     try {
       const applications = await ApplicationService.getAllApplications();
-      return new Response(
-        JSON.stringify(applications),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      return applications;
+    } catch (error: any) {
+      return {
+        message: error.message,
+        status: 400,
+      };
     }
   }
 
-  static async getApplicationById(req: Request) {
+  static async getApplicationById({ params }: { params: { id: string } }) {
     try {
-      const  applicationId  = req.url.split("/").pop();
-      const application = await ApplicationService.getApplicationById(Number(applicationId));
+      const application = await ApplicationService.getApplicationById(Number(params.id));
       if (application) {
-        return new Response(
-          JSON.stringify(application),
-          {
-            status: 200,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        return application;
       } else {
-        return new Response(
-          JSON.stringify({ message: "Application not found" }),
-          {
-            status: 404,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        return {
+          message: "Application not found",
+          status: 404,
+        };
       }
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+    } catch (error: any) {
+      return {
+        message: error.message,
+        status: 400,
+      };
     }
   }
 
-  static async updateApplication(req: Request) {
+  static async updateApplication({ params, body }: { params: { id: string }; body: any }) {
     try {
-      const  applicationId  = req.url.split("/").pop();
-      const data = req.body;
-      const application = await ApplicationService.updateApplication(Number(applicationId), data);
-      return new Response(
-        JSON.stringify(application),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const application = await ApplicationService.updateApplication(Number(params.id), body);
+      return application;
+    } catch (error: any) {
+      return {
+        message: error.message,
+        status: 400,
+      };
     }
   }
 
-  static async deleteApplication(req: Request) {
+  static async deleteApplication({ params }: { params: { id: string } }) {
     try {
-      const applicationId  = req.url.split("/").pop();
-      await ApplicationService.deleteApplication(Number(applicationId));
-      return new Response(
-        JSON.stringify({ message: "Application deleted successfully" }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await ApplicationService.deleteApplication(Number(params.id));
+      return {
+        message: "Application deleted successfully",
+      };
+    } catch (error: any) {
+      return {
+        message: error.message,
+        status: 400,
+      };
     }
   }
 }

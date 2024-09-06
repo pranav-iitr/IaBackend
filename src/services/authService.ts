@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   static async loginUser(email: string, plainPassword: string) {
-    console.log(email, plainPassword);
+  
     const user_arr = await db.select().from(appUserTable).where(eq(appUserTable.email, email))
     if (!user_arr) throw new Error("User not found");
 

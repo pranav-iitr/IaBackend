@@ -2,67 +2,41 @@
 
 import { AuthService } from "../services/authService";
 
+import { t } from "elysia";
+
+// AuthController class refactored for Elysia
 export class AuthController {
-  static async register(req: Request) : Promise<Response> {
-    const res = new Response();
+  static async register({ body }: { body: { userName: string, email: string, password: string, role: string } }) {
     try {
-      const { userName, email, password, role } = await req.json();
+      const { userName, email, password, role } = body;
       const user = await AuthService.registerUser({ userName, email, password, role });
-      
-      return new Response(
-        JSON.stringify({ message: "User registered successfully", user }),
-        {
-          status: 201,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-       
-      )
-    } catch (error:any) {
+      return {
+        message: "User registered successfully",
+        user,
+      };
+    } catch (error: any) {
       console.log(error);
-      return new Response(
-       
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      return {
+        message: error.message,
+        status: 400
+      };
     }
-    
   }
 
-  static async login(req: Request) : Promise<Response> {
-    const res = new Response();
+  static async login({ body }: { body: { email: string, password: string } }) {
     try {
-      const { email, password } = await req.json();
+      const { email, password } = body;
       const token = await AuthService.loginUser(email, password);
-     
-      return new Response(
-        JSON.stringify({ token }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
+      return {
+        token,
+        status: 200,
+      };
+    } catch (error: any) {
       console.log(error);
-      
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      return {
+        message: error.message,
+        status: 400
+      };
     }
-
   }
 }

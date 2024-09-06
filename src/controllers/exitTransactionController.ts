@@ -1,146 +1,91 @@
-
 import { ExitTransactionService } from "../services/exitTransactionService";
 
 export class ExitTransactionController {
-  static async createExitTransaction(req: Request) {
+  static async createExitTransaction({ body }: { body: any }) {
     try {
-      const data = req.body;
-      const exitTransaction = await ExitTransactionService.createExitTransaction(data);
-      return new Response(
-        JSON.stringify({ message: "Exit transaction created successfully", exitTransaction }),
-        {
-          status: 201,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const exitTransaction = await ExitTransactionService.createExitTransaction(body);
+      return {
+        status: 201,
+        message: "Exit transaction created successfully",
+        exitTransaction,
+      };
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 
-  static async getAllExitTransactions(req: Request) {
+  static async getAllExitTransactions() {
     try {
       const exitTransactions = await ExitTransactionService.getAllExitTransactions();
-      return new Response(
-        JSON.stringify(exitTransactions),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      return {
+        status: 200,
+        exitTransactions,
+      };
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 
-  static async getExitTransactionById(req: Request) {
+  static async getExitTransactionById({ params }: { params: { id: string } }) {
     try {
-      const  exitId  = req.url.split("/").pop();
-      const exitTransaction = await ExitTransactionService.getExitTransactionById(Number(exitId));
+      const exitId = Number(params.id);
+      const exitTransaction = await ExitTransactionService.getExitTransactionById(exitId);
       if (exitTransaction) {
-        return new Response(
-          JSON.stringify(exitTransaction),
-          {
-            status: 200,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        return {
+          status: 200,
+          exitTransaction,
+        };
       } else {
-        return new Response(
-          JSON.stringify({ message: "Exit transaction not found" }),
-          {
-            status: 404,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        return {
+          status: 404,
+          message: "Exit transaction not found",
+        };
       }
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 
-  static async updateExitTransaction(req: Request) {
+  static async updateExitTransaction({ params, body }: { params: { id: string }; body: any }) {
     try {
-      const  exitId  = req.url.split("/").pop();
-      const data = req.body;
-      const exitTransaction = await ExitTransactionService.updateExitTransaction(Number(exitId), data);
-      return new Response(
-        JSON.stringify({ message: "Exit transaction updated successfully", exitTransaction }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const exitId = Number(params.id);
+      const exitTransaction = await ExitTransactionService.updateExitTransaction(exitId, body);
+      return {
+        status: 200,
+        message: "Exit transaction updated successfully",
+        exitTransaction,
+      };
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 
-  static async deleteExitTransaction(req: Request) {
+  static async deleteExitTransaction({ params }: { params: { id: string } }) {
     try {
-      const  exitId  = req.url.split("/").pop();
-      await ExitTransactionService.deleteExitTransaction(Number(exitId));
-      return new Response(
-        JSON.stringify({ message: "Exit transaction deleted successfully" }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const exitId = Number(params.id);
+      await ExitTransactionService.deleteExitTransaction(exitId);
+      return {
+        status: 200,
+        message: "Exit transaction deleted successfully",
+      };
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 }
+

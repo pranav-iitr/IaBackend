@@ -1,9 +1,14 @@
+
 import { db } from "../db";
 import { valuationHistoryTable } from "../db/schema";
 import { eq } from "drizzle-orm";
 
 export class ValuationService {
   static async createValuation(data: any) {
+    
+    data.createdAt = new Date();
+    data.valuationDate = new Date(data.valuationDate);
+    // console.log("ValuationService -> createValuation -> data", data);
     const valuation = await db.insert(valuationHistoryTable).values(data).returning();
     return valuation[0];
   }

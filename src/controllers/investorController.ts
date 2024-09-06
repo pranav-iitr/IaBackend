@@ -1,146 +1,90 @@
-
 import { InvestorService } from "../services/investorService";
 
 export class InvestorController {
-  static async createInvestor(req: Request) {
+  static async createInvestor({ body }: { body: any }) {
     try {
-      const data = req.body;
-      const investor = await InvestorService.createInvestor(data);
-      return new Response(
-        JSON.stringify({ message: "Investor created successfully", investor }),
-        {
-          status: 201,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const investor = await InvestorService.createInvestor(body);
+      return {
+        status: 201,
+        message: "Investor created successfully",
+        investor,
+      };
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 
-  static async getAllInvestors(req: Request) {
+  static async getAllInvestors() {
     try {
       const investors = await InvestorService.getAllInvestors();
-      return new Response(
-        JSON.stringify(investors),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      return {
+        status: 200,
+        investors,
+      };
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 
-  static async getInvestorById(req: Request) {
+  static async getInvestorById({ params }: { params: { id: string } }) {
     try {
-      const  investorId  = req.url.split("/").pop();
-      const investor = await InvestorService.getInvestorById(Number(investorId));
+      const investorId = Number(params.id);
+      const investor = await InvestorService.getInvestorById(investorId);
       if (investor) {
-        return new Response(
-          JSON.stringify(investor),
-          {
-            status: 200,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        return {
+          status: 200,
+          investor,
+        };
       } else {
-        return new Response(
-          JSON.stringify({ message: "Investor not found" }),
-          {
-            status: 404,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        return {
+          status: 404,
+          message: "Investor not found",
+        };
       }
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 
-  static async updateInvestor(req: Request) {
+  static async updateInvestor({ params, body }: { params: { id: string }; body: any }) {
     try {
-      const investorId  = req.url.split("/").pop();
-      const data = req.body;
-      const investor = await InvestorService.updateInvestor(Number(investorId), data);
-      return new Response(
-        JSON.stringify({ message: "Investor updated successfully", investor }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const investorId = Number(params.id);
+      const investor = await InvestorService.updateInvestor(investorId, body);
+      return {
+        status: 200,
+        message: "Investor updated successfully",
+        investor,
+      };
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 
-  static async deleteInvestor(req: Request) {
+  static async deleteInvestor({ params }: { params: { id: string } }) {
     try {
-      const  investorId  = req.url.split("/").pop();
-      await InvestorService.deleteInvestor(Number(investorId));
-      return new Response(
-        JSON.stringify({ message: "Investor deleted successfully" }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const investorId = Number(params.id);
+      await InvestorService.deleteInvestor(investorId);
+      return {
+        status: 200,
+        message: "Investor deleted successfully",
+      };
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 }

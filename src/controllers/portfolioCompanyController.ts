@@ -1,127 +1,90 @@
-
-import { ne,eq } from "drizzle-orm";
 import { PortfolioCompanyService } from "../services/portfolioCompanyService";
 
 export class PortfolioCompanyController {
-  static async createCompany(req: Request) {
+  static async createCompany({ body }: { body: any }) {
     try {
-      const data = req.body;
-      const company = await PortfolioCompanyService.createCompany(data);
-      return new Response(JSON.stringify(company), {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    } catch (error:any) {
-      return new Response(JSON.stringify({ message: error.message }), {
+      const company = await PortfolioCompanyService.createCompany(body);
+      return {
+        status: 201,
+        message: "Company created successfully",
+        company,
+      };
+    } catch (error: any) {
+      return {
         status: 400,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        });
+        message: error.message,
+      };
     }
   }
 
-  static async getAllCompanies(req: Request) {
+  static async getAllCompanies() {
     try {
       const companies = await PortfolioCompanyService.getAllCompanies();
-        return new Response(JSON.stringify(companies), {
-            status: 200,
-            headers: {
-                "Content-Type": "application/json",
-            },
-            });
-        
-    } catch (error:any) {
-        return new Response(JSON.stringify({ message: error.message }), {
-            status: 400,
-            headers: {
-            "Content-Type": "application/json",
-            },
-        });
+      return {
+        status: 200,
+        companies,
+      };
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 
-  static async getCompanyById(req: Request) {
+  static async getCompanyById({ params }: { params: { id: string } }) {
     try {
-      const  companyId  = req.url.split("/").pop();
-      const company = await PortfolioCompanyService.getCompanyById(Number(companyId));
+      const companyId = Number(params.id);
+      const company = await PortfolioCompanyService.getCompanyById(companyId);
       if (company) {
-        return new Response(JSON.stringify(company), {
+        return {
           status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+          company,
+        };
       } else {
-        return new Response(JSON.stringify({ message: "Company not found" }), {
+        return {
           status: 404,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+          message: "Company not found",
+        };
       }
-    } catch (error:any) {
-        return new Response(JSON.stringify({ message: error.message }), {
-            status: 400,
-            headers: {
-            "Content-Type": "application/json",
-            },  
-        });
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 
-  static async updateCompany(req: Request) {
+  static async updateCompany({ params, body }: { params: { id: string }; body: any }) {
     try {
-      const  companyId  = req.url.split("/").pop();
-      const data = req.body;
-      const company = await PortfolioCompanyService.updateCompany(Number(companyId), data);
-      return new Response(
-        JSON.stringify(company),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const companyId = Number(params.id);
+      const company = await PortfolioCompanyService.updateCompany(companyId, body);
+      return {
+        status: 200,
+        message: "Company updated successfully",
+        company,
+      };
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 
-  static async deleteCompany(req: Request) {
+  static async deleteCompany({ params }: { params: { id: string } }) {
     try {
-      const companyId  = req.url.split("/").pop();
-      await PortfolioCompanyService.deleteCompany(Number(companyId));
-      return new Response(
-        JSON.stringify({ message: "Company deleted successfully" }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error:any) {
-      return new Response(
-        JSON.stringify({ message: error.message }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const companyId = Number(params.id);
+      await PortfolioCompanyService.deleteCompany(companyId);
+      return {
+        status: 200,
+        message: "Company deleted successfully",
+      };
+    } catch (error: any) {
+      return {
+        status: 400,
+        message: error.message,
+      };
     }
   }
 }
